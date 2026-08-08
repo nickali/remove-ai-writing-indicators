@@ -1,0 +1,17 @@
+{
+  "name": "remove-ai-writing-indicators",
+  "version": "1.0.0",
+  "description": "Find and remove the patterns that make writing read as machine-produced, without flattening the writer's voice. Four modes, ordered by how much of the final text stays yours.",
+  "author": {
+    "name": "Nick Ali",
+    "url": "https://github.com/nickali"
+  },
+  "homepage": "https://github.com/nickali/remove-ai-writing-indicators",
+  "repository": "https://github.com/nickali/remove-ai-writing-indicators",
+  "license": "MIT",
+  "keywords": [
+    "writing",
+    "editing",
+    "voice"
+  ]
+}

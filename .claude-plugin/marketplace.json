@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "remove-ai-writing-indicators",
+  "description": "Find and remove the patterns that make writing read as machine-produced, without flattening the writer's voice.",
+  "owner": {
+    "name": "Nick Ali",
+    "url": "https://github.com/nickali"
+  },
+  "plugins": [
+    {
+      "name": "remove-ai-writing-indicators",
+      "description": "Detect, suggest, edit, or rewrite: four modes for stripping AI-writing patterns out of a draft.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
