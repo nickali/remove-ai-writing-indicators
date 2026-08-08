@@ -1,0 +1,51 @@
+name: Publish
+
+# Publishing is triggered by an ordinary push. The version number in
+# package.json decides whether anything happens: if that version is already on
+# npm the job does nothing, so day-to-day commits are silently ignored and only
+# a version bump releases.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Is this version already on npm?
+        id: check
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Local: $NAME@$VERSION"
+          if npm view "$NAME@$VERSION" version > /dev/null 2>&1; then
+            echo "Already published. Nothing to do."
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "Not on npm yet. This push is a release."
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Structural checks only. The harness install checks skip themselves
+      # here because neither pi nor claude is on a runner, and the agent-driven
+      # tests need SKILL_AGENT_TESTS=1.
+      - name: Test
+        if: steps.check.outputs.publish == 'true'
+        run: cd tests && python3 -m unittest discover -v
+
+      - name: Publish to npm
+        if: steps.check.outputs.publish == 'true'
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

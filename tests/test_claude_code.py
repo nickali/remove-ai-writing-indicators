@@ -12,11 +12,10 @@ Then:
 """
 
 import json
-import shutil
 import unittest
 from pathlib import Path
 
-from harness import SKILL_NAME, ModeChecks, StructureChecks, agent_tests
+from harness import SKILL_NAME, ModeChecks, StructureChecks, agent_tests, needs_harness
 
 CLAUDE_HOME = Path.home() / ".claude"
 CLAUDE_SETTINGS = CLAUDE_HOME / "settings.json"
@@ -49,9 +48,7 @@ class TestClaudeCode(unittest.TestCase, StructureChecks, ModeChecks):
 
     # --- install --------------------------------------------------------
 
-    def test_claude_is_installed(self):
-        self.assertIsNotNone(shutil.which("claude"), "claude is not on PATH")
-
+    @needs_harness("claude")
     def test_plugin_enabled(self):
         self.assertTrue(CLAUDE_SETTINGS.is_file(), f"no settings at {CLAUDE_SETTINGS}")
         enabled = json.loads(CLAUDE_SETTINGS.read_text()).get("enabledPlugins", {})
@@ -63,6 +60,7 @@ class TestClaudeCode(unittest.TestCase, StructureChecks, ModeChecks):
         )
         self.assertTrue(enabled[PLUGIN_KEY], f"{PLUGIN_KEY} is installed but disabled")
 
+    @needs_harness("claude")
     def test_skill_files_reached_the_marketplace_clone(self):
         skill_md = MARKETPLACE_CLONE / "skills" / SKILL_NAME / "SKILL.md"
         self.assertTrue(

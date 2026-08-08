@@ -11,11 +11,10 @@ Then:
 """
 
 import json
-import shutil
 import unittest
 from pathlib import Path
 
-from harness import SKILL_NAME, ModeChecks, StructureChecks, agent_tests
+from harness import SKILL_NAME, ModeChecks, StructureChecks, agent_tests, needs_harness
 
 PI_HOME = Path.home() / ".pi" / "agent"
 PI_SETTINGS = PI_HOME / "settings.json"
@@ -47,9 +46,7 @@ class TestPi(unittest.TestCase, StructureChecks, ModeChecks):
 
     # --- install --------------------------------------------------------
 
-    def test_pi_is_installed(self):
-        self.assertIsNotNone(shutil.which("pi"), "pi is not on PATH")
-
+    @needs_harness("pi")
     def test_skill_registered_globally(self):
         self.assertTrue(PI_SETTINGS.is_file(), f"no Pi settings at {PI_SETTINGS}")
         packages = json.loads(PI_SETTINGS.read_text()).get("packages", [])
@@ -60,6 +57,7 @@ class TestPi(unittest.TestCase, StructureChecks, ModeChecks):
             f"Run: pi install git:github.com/nickali/{SKILL_NAME}",
         )
 
+    @needs_harness("pi")
     def test_skill_files_reached_the_clone(self):
         skill_md = PI_CLONE / "skills" / SKILL_NAME / "SKILL.md"
         self.assertTrue(

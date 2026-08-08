@@ -44,6 +44,19 @@ agent_tests = unittest.skipUnless(
 )
 
 
+def needs_harness(binary):
+    """Skip when the harness is absent rather than failing.
+
+    "Is the skill installed here" is a question about this machine. On a CI
+    runner with no harness the honest answer is "not applicable", while on a
+    laptop that has the harness a missing install is a real failure.
+    """
+    return unittest.skipUnless(
+        shutil.which(binary),
+        f"{binary} is not on PATH, so there is no install to check",
+    )
+
+
 def sha256(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
