@@ -178,6 +178,26 @@ They are separate files on purpose. Keep the expected findings out of the run â€
 if the answers are in context, the model copies them instead of finding them,
 and the check proves nothing.
 
+## Releasing
+
+The version number lives in `package.json` and `.claude-plugin/plugin.json`,
+and as a git tag. One command keeps all three together:
+
+```bash
+npm version patch     # or minor / major
+git push --follow-tags
+npm publish
+```
+
+`npm version` bumps `package.json`, then a `version` lifecycle script copies
+that number into `plugin.json` and stages it, then npm commits both and tags
+the result. There is no separate sync step to remember, and no git hook â€” a
+hook would run on every commit whether or not a version changed, and would
+fight `npm version` for control of the same files.
+
+A test asserts the two manifests agree, so drift fails the suite rather than
+reaching a user.
+
 ## Tests
 
 Stdlib `unittest`, no dependencies.

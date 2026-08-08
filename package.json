@@ -22,6 +22,10 @@
     "name": "Nick Ali",
     "url": "https://github.com/nickali"
   },
+  "scripts": {
+    "test": "cd tests && python3 -m unittest discover -v",
+    "version": "node -e \"const fs=require('fs'),f='.claude-plugin/plugin.json',j=JSON.parse(fs.readFileSync(f));j.version=JSON.parse(fs.readFileSync('package.json')).version;fs.writeFileSync(f,JSON.stringify(j,null,2)+'\\n')\" && git add .claude-plugin/plugin.json"
+  },
   "pi": {
     "skills": [
       "./skills"
