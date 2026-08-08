@@ -1,6 +1,6 @@
 {
   "name": "remove-ai-writing-indicators",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Find and remove the patterns that make writing read as machine-produced, without flattening the writer's voice. Four modes, ordered by how much of the final text stays yours.",
   "author": {
     "name": "Nick Ali",
