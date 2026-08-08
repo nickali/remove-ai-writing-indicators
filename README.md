@@ -17,13 +17,17 @@ Works on anything: blog posts, essays, documentation, emails, resumes.
 **Pi**
 
 ```bash
-pi install git:github.com/nickali/remove-ai-writing-indicators
+pi install npm:remove-ai-writing-indicators          # released versions
+pi install git:github.com/nickali/remove-ai-writing-indicators   # latest main
 ```
 
-Add `-l` to install into one project instead of globally. Pi tracks `main` and
-tells you at startup when the remote has moved; run `pi update --extensions` to
-pull it. To freeze a version instead, install a pinned ref
-(`...@v1.0.0`) — pinned packages are deliberately skipped by updates.
+Add `-l` to install into one project instead of globally.
+
+The npm install follows published releases. The git install tracks `main`, so
+you get changes before they are released; Pi tells you at startup when the
+remote has moved, and `pi update --extensions` pulls it. Pin a git ref
+(`...@v1.0.0`) to freeze a version — pinned packages are deliberately skipped
+by updates.
 
 ## Use
 

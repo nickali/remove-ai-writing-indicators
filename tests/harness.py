@@ -77,6 +77,36 @@ class StructureChecks:
         sources = [entry["source"] for entry in m["plugins"]]
         self.assertIn("./", sources, "marketplace must point at the repo root")
 
+    def assert_npm_and_plugin_versions_agree(self):
+        """The version lives in two manifests and must not drift.
+
+        Claude Code keys its plugin cache off .claude-plugin/plugin.json.
+        Pi's catalog and npm updates key off package.json. Nothing keeps them
+        in sync automatically.
+        """
+        pkg = REPO_ROOT / "package.json"
+        self.assertTrue(pkg.is_file(), "missing package.json")
+
+        p = load_json(pkg)
+        plugin = load_json(REPO_ROOT / ".claude-plugin" / "plugin.json")
+
+        self.assertEqual(p["name"], SKILL_NAME)
+        self.assertEqual(
+            p["version"],
+            plugin["version"],
+            "package.json and plugin.json versions have drifted",
+        )
+        self.assertIn(
+            "pi-package",
+            p.get("keywords", []),
+            "the pi-package keyword is what lists this in the Pi catalog",
+        )
+        self.assertEqual(p.get("pi", {}).get("skills"), ["./skills"])
+
+        # A dependency here would make `pi install` do real work on every
+        # install and update, for a package that is only markdown.
+        self.assertNotIn("dependencies", p, "this package must stay dependency-free")
+
     def assert_skill_files_present(self):
         skill_md = SKILL_DIR / "SKILL.md"
         indicators = SKILL_DIR / "indicators.md"

@@ -33,6 +33,9 @@ class TestPi(unittest.TestCase, StructureChecks, ModeChecks):
     def test_repo_is_a_valid_plugin(self):
         self.assert_repo_is_a_valid_plugin()
 
+    def test_npm_and_plugin_versions_agree(self):
+        self.assert_npm_and_plugin_versions_agree()
+
     def test_skill_files_present(self):
         self.assert_skill_files_present()
 
