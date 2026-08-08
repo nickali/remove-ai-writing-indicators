@@ -1,9 +1,14 @@
 # remove-ai-writing-indicators
 
-A Claude Code skill that finds the patterns making your writing read as
+A skill for [Claude Code](https://claude.com/claude-code) and
+[Pi](https://pi.dev) that finds the patterns making your writing read as
 machine-produced, and takes them out without flattening your voice.
 
 Works on anything: blog posts, essays, documentation, emails, resumes.
+
+It follows the [Agent Skills](https://agentskills.io/specification) spec, so it
+should load in any harness that reads a `SKILL.md`. Claude Code and Pi are the
+two it has actually been tested against.
 
 ## Install
 
