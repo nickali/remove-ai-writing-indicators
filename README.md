@@ -7,10 +7,23 @@ Works on anything: blog posts, essays, documentation, emails, resumes.
 
 ## Install
 
+**Claude Code**
+
 ```
 /plugin marketplace add nickali/remove-ai-writing-indicators
 /plugin install remove-ai-writing-indicators@remove-ai-writing-indicators
 ```
+
+**Pi**
+
+```bash
+pi install git:github.com/nickali/remove-ai-writing-indicators
+```
+
+Add `-l` to install into one project instead of globally. Pi tracks `main` and
+tells you at startup when the remote has moved; run `pi update --extensions` to
+pull it. To freeze a version instead, install a pinned ref
+(`...@v1.0.0`) — pinned packages are deliberately skipped by updates.
 
 ## Use
 
@@ -20,6 +33,9 @@ Works on anything: blog posts, essays, documentation, emails, resumes.
 /remove-ai-writing-indicators edit drafts/post.mdx
 /remove-ai-writing-indicators rewrite drafts/post.mdx
 ```
+
+In Pi the same thing is spelled `/skill:remove-ai-writing-indicators edit
+drafts/post.mdx`, or just describe the task and let the agent load the skill.
 
 The mode word goes next to the path, in either order. You can paste text
 instead of giving a path, in which case nothing is written to disk.

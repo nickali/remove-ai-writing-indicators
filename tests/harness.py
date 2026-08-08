@@ -16,6 +16,7 @@ Behavioural checks are skipped unless SKILL_AGENT_TESTS=1 is set.
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -86,8 +87,24 @@ class StructureChecks:
         text = skill_md.read_text()
         self.assertTrue(text.startswith("---\n"), "SKILL.md needs YAML frontmatter")
         frontmatter = text.split("---", 2)[1]
-        self.assertIn(f"name: {SKILL_NAME}", frontmatter)
-        self.assertIn("description:", frontmatter)
+
+        # Rules from the Agent Skills specification, as enforced by Pi.
+        # https://agentskills.io/specification#frontmatter-required
+        name_match = re.search(r"^name:\s*(.+)$", frontmatter, re.M)
+        self.assertIsNotNone(name_match, "SKILL.md frontmatter needs a name")
+        name = name_match.group(1).strip()
+        self.assertEqual(name, SKILL_NAME)
+        self.assertLessEqual(len(name), 64, "name may not exceed 64 characters")
+        self.assertRegex(name, r"^[a-z0-9]+(-[a-z0-9]+)*$",
+                         "name must be lowercase a-z, 0-9 and single hyphens, "
+                         "with no leading, trailing or consecutive hyphens")
+
+        # A skill with no description is not loaded at all, so this is the one
+        # frontmatter mistake that fails silently rather than warning.
+        desc_match = re.search(r"^description:\s*(.+)$", frontmatter, re.M)
+        self.assertIsNotNone(desc_match, "a skill with no description is never loaded")
+        description = desc_match.group(1).strip()
+        self.assertLessEqual(len(description), 1024, "description may not exceed 1024 characters")
 
         catalog = indicators.read_text()
         for group in GROUP_NAMES:

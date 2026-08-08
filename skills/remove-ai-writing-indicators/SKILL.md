@@ -1,6 +1,7 @@
 ---
 name: remove-ai-writing-indicators
 description: Find and remove the patterns that make writing read as machine-produced, without flattening the writer's voice. Use when a draft needs auditing for AI-writing tells, or editing to remove them. Four modes - detect, suggest, edit, rewrite - ordered by how much of the final text stays the writer's.
+license: MIT
 ---
 
 # Remove AI writing indicators
