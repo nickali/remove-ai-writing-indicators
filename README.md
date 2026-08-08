@@ -97,9 +97,13 @@ check yourself. A score is somebody else's guess.
 
 ## Fixture
 
-`examples/slop-draft.md` holds a deliberately bad draft and the findings Detect
-should produce on it. Useful for checking the skill still behaves after you edit
-`SKILL.md` or `indicators.md`.
+`examples/slop-draft.md` is a deliberately bad draft.
+`examples/expected-findings.md` is what Detect should report on it. Useful for
+checking the skill still behaves after you edit `SKILL.md` or `indicators.md`.
+
+They are separate files on purpose. Keep the expected findings out of the run —
+if the answers are in context, the model copies them instead of finding them,
+and the check proves nothing.
 
 ## License
 
