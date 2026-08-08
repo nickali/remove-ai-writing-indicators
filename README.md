@@ -158,6 +158,29 @@ They are separate files on purpose. Keep the expected findings out of the run â€
 if the answers are in context, the model copies them instead of finding them,
 and the check proves nothing.
 
+## Tests
+
+Stdlib `unittest`, no dependencies.
+
+```bash
+cd tests
+python3 -m unittest discover -v                    # structure and install checks
+SKILL_AGENT_TESTS=1 python3 -m unittest discover -v  # plus all four modes, for real
+```
+
+`test_claude_code.py` and `test_pi.py` cover one harness each. The default run
+is instant and free: it validates the plugin manifests, the skill frontmatter,
+the indicator groups, that the skill references no other skill, that the fixture
+does not ship its own answer key, and that the skill is actually installed in
+that harness.
+
+The agent-driven tests are opt-in because they invoke a real model, take
+minutes, and cost tokens. They assert only on what is deterministic: Detect and
+Suggest write no files, Edit writes `_v2` and leaves the source byte-identical,
+Rewrite increments to `_v3` rather than clobbering an existing `_v2`, and the
+draft's missing article survives both write modes. Each run happens in a
+throwaway temp directory holding one copy of the draft.
+
 ## License
 
 MIT

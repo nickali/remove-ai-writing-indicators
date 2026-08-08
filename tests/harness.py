@@ -1,0 +1,198 @@
+"""Shared helpers for the harness test suites.
+
+Two kinds of check live here.
+
+Structural checks are deterministic and free: does the repo have the files a
+plugin needs, is the JSON valid, is the skill registered with the harness.
+
+Behavioural checks drive a real agent, so they are slow, cost tokens, and
+cannot assert on exact wording. They assert on the things that are actually
+deterministic: which files got written, which files did not, whether the source
+survived, and whether the mode banner and group headings appear at all.
+
+Behavioural checks are skipped unless SKILL_AGENT_TESTS=1 is set.
+"""
+
+import hashlib
+import json
+import os
+import shutil
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+SKILL_NAME = "remove-ai-writing-indicators"
+SKILL_DIR = REPO_ROOT / "skills" / SKILL_NAME
+FIXTURE = REPO_ROOT / "examples" / "slop-draft.md"
+
+GROUP_NAMES = ["Surface", "Structure", "Voice", "Substance"]
+
+# One agent run can take several minutes on a slow provider.
+AGENT_TIMEOUT = 600
+
+PROMPT = (
+    "Use the {skill} skill in {mode} mode on slop-draft.md. "
+    "Read only that file."
+)
+
+agent_tests = unittest.skipUnless(
+    os.environ.get("SKILL_AGENT_TESTS") == "1",
+    "set SKILL_AGENT_TESTS=1 to run agent-driven tests (slow, costs tokens)",
+)
+
+
+def sha256(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def load_json(path):
+    with open(path) as fh:
+        return json.load(fh)
+
+
+class StructureChecks:
+    """Repo-level checks that hold regardless of which harness runs the skill."""
+
+    def assert_repo_is_a_valid_plugin(self):
+        marketplace = REPO_ROOT / ".claude-plugin" / "marketplace.json"
+        plugin = REPO_ROOT / ".claude-plugin" / "plugin.json"
+
+        self.assertTrue(marketplace.is_file(), "missing .claude-plugin/marketplace.json")
+        self.assertTrue(plugin.is_file(), "missing .claude-plugin/plugin.json")
+
+        m = load_json(marketplace)
+        p = load_json(plugin)
+
+        self.assertEqual(m["name"], SKILL_NAME)
+        self.assertEqual(p["name"], SKILL_NAME)
+
+        # The local plugin cache is keyed by version. Without this field an
+        # install lands in a directory called "unknown" and updates cannot be
+        # told apart.
+        self.assertIn("version", p, "plugin.json must declare a version")
+
+        sources = [entry["source"] for entry in m["plugins"]]
+        self.assertIn("./", sources, "marketplace must point at the repo root")
+
+    def assert_skill_files_present(self):
+        skill_md = SKILL_DIR / "SKILL.md"
+        indicators = SKILL_DIR / "indicators.md"
+
+        self.assertTrue(skill_md.is_file(), f"missing {skill_md}")
+        self.assertTrue(indicators.is_file(), f"missing {indicators}")
+
+        text = skill_md.read_text()
+        self.assertTrue(text.startswith("---\n"), "SKILL.md needs YAML frontmatter")
+        frontmatter = text.split("---", 2)[1]
+        self.assertIn(f"name: {SKILL_NAME}", frontmatter)
+        self.assertIn("description:", frontmatter)
+
+        catalog = indicators.read_text()
+        for group in GROUP_NAMES:
+            self.assertIn(f"## {group}", catalog, f"indicators.md missing {group} group")
+
+    def assert_no_cross_skill_references(self):
+        """The skill must stand alone. Attribution belongs in the README."""
+        for path in (SKILL_DIR / "SKILL.md", SKILL_DIR / "indicators.md"):
+            text = path.read_text().lower()
+            self.assertNotIn("no-ai-slop", text, f"{path.name} must not reference other skills")
+
+    def assert_fixture_and_answers_are_separate(self):
+        """A fixture that ships its own answer key cannot test detection.
+
+        If the expected findings share a context window with the draft, the
+        model copies them instead of finding them.
+        """
+        expected = REPO_ROOT / "examples" / "expected-findings.md"
+        self.assertTrue(FIXTURE.is_file())
+        self.assertTrue(expected.is_file())
+
+        draft = FIXTURE.read_text()
+        for marker in ("Expected", "Machine vocabulary", "Preserve ruling"):
+            self.assertNotIn(marker, draft, "answer key leaked into the draft fixture")
+
+
+class ModeChecks:
+    """Behavioural checks driven through a real agent.
+
+    Subclasses provide build_command() and a human-readable harness_name.
+    """
+
+    def run_mode(self, mode, workdir):
+        cmd = self.build_command(PROMPT.format(skill=SKILL_NAME, mode=mode))
+        result = subprocess.run(
+            cmd,
+            cwd=workdir,
+            capture_output=True,
+            text=True,
+            timeout=AGENT_TIMEOUT,
+        )
+        self.assertEqual(
+            result.returncode,
+            0,
+            f"{self.harness_name} exited {result.returncode}\n{result.stderr[-2000:]}",
+        )
+        return result.stdout
+
+    def fresh_workdir(self):
+        """A temp directory holding only the draft, so runs cannot see the answers."""
+        workdir = Path(tempfile.mkdtemp(prefix="raiwi-"))
+        self.addCleanup(shutil.rmtree, workdir, True)
+        shutil.copy(FIXTURE, workdir / "slop-draft.md")
+        return workdir
+
+    def assert_wrote_nothing(self, workdir, output, banner_word):
+        self.assertIn(banner_word, output, f"{banner_word} banner missing from output")
+        for group in GROUP_NAMES:
+            self.assertIn(group, output, f"output missing {group} findings group")
+        files = sorted(p.name for p in workdir.iterdir())
+        self.assertEqual(files, ["slop-draft.md"], f"{banner_word} mode must not write files")
+
+    # --- the four modes -------------------------------------------------
+
+    def check_detect(self):
+        workdir = self.fresh_workdir()
+        before = sha256(workdir / "slop-draft.md")
+        output = self.run_mode("detect", workdir)
+        self.assert_wrote_nothing(workdir, output, "Detect")
+        self.assertEqual(before, sha256(workdir / "slop-draft.md"), "source was modified")
+
+    def check_suggest(self):
+        workdir = self.fresh_workdir()
+        output = self.run_mode("suggest", workdir)
+        self.assert_wrote_nothing(workdir, output, "Suggest")
+
+    def check_edit(self):
+        workdir = self.fresh_workdir()
+        source = workdir / "slop-draft.md"
+        before = sha256(source)
+
+        self.run_mode("edit", workdir)
+
+        produced = workdir / "slop-draft_v2.md"
+        self.assertTrue(produced.is_file(), "edit mode did not write slop-draft_v2.md")
+        self.assertEqual(before, sha256(source), "edit mode modified the source file")
+
+        text = produced.read_text()
+        # Preserve ruling: the draft is missing an article here and the skill
+        # must not fix it.
+        self.assertIn("cut attendee list", text, "preserve ruling violated: grammar was corrected")
+        self.assertNotIn("—", text, "em dash survived in a draft under 300 words")
+
+    def check_rewrite_increments(self):
+        """Rewrite must not clobber an earlier run's output."""
+        workdir = self.fresh_workdir()
+        taken = workdir / "slop-draft_v2.md"
+        taken.write_text("output from an earlier run\n")
+        taken_hash = sha256(taken)
+
+        self.run_mode("rewrite", workdir)
+
+        produced = workdir / "slop-draft_v3.md"
+        self.assertTrue(
+            produced.is_file(),
+            "rewrite did not increment past the existing _v2 file",
+        )
+        self.assertEqual(taken_hash, sha256(taken), "rewrite overwrote the existing _v2 file")

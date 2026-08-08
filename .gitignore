@@ -1,0 +1,10 @@
+# Output from Edit and Rewrite runs against the fixture
+examples/*_v[0-9]*.md
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# macOS
+.DS_Store
