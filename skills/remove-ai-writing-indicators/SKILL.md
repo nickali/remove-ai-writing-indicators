@@ -29,9 +29,9 @@ No mode word means Detect. A mode word you don't recognize means ask, not guess.
 
 > **Suggest mode.** Naming every indicator that fires, quoting the line, and proposing one fix each. You apply them. No file written.
 
-> **Edit mode.** Returning a full edited draft, changed only by cutting and rearranging words already on the page. No new sentences composed. Writes `<name>_v2.<ext>`.
+> **Edit mode.** Returning a full edited draft, changed only by cutting and rearranging words already on the page. No new sentences composed. Writes a new numbered file beside the original.
 
-> **Rewrite mode.** Returning a full edited draft with new prose where needed. This mode puts words in your mouth, so the least of the final text stays yours. Writes `<name>_v2.<ext>`.
+> **Rewrite mode.** Returning a full edited draft with new prose where needed. This mode puts words in your mouth, so the least of the final text stays yours. Writes a new numbered file beside the original.
 
 What each mode produces:
 
@@ -49,9 +49,20 @@ the default so the low-intervention path is the one taken by accident.
 
 Read the source. Never write to it.
 
-Edit and Rewrite write a sibling file with `_v2` before the extension:
-`post.mdx` → `post_v2.mdx`. If that path exists, increment to `_v3` and beyond.
-Detect and Suggest write nothing.
+Detect and Suggest write nothing at all.
+
+Edit and Rewrite write a sibling file with a version number before the
+extension. **Before writing, list the directory and find the highest existing
+version, then write the next one.** Never overwrite a file that already exists.
+
+```
+post.mdx                      → write post_v2.mdx
+post.mdx, post_v2.mdx         → write post_v3.mdx
+post.mdx, post_v2.mdx, _v3    → write post_v4.mdx
+```
+
+A previous run's output is somebody's work in progress. Clobbering it loses a
+comparison they may have wanted.
 
 If the user pastes text instead of giving a path, work on the pasted text and
 return the result in conversation. Create no file.

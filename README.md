@@ -47,6 +47,59 @@ problem. Rewrite lifts the constraint and says so in its banner.
 Nothing is ever written to your source file. Edit and Rewrite write a sibling
 `_v2` file next to the original, incrementing if that name is taken.
 
+## What it catches
+
+Around forty patterns, sorted by what the skill is allowed to do about each one.
+
+### Surface — fixed without asking
+
+- **Machine vocabulary.** delve, leverage, robust, meticulous, transformative, elevate, embark, ever-evolving, tapestry
+- **Inflated verbs.** "Spearheaded the migration" for "moved us to Postgres"
+- **Empty adverbs.** just, literally, simply, truly, fundamentally, crucially
+- **Empty phrases.** "It's worth noting," "at the end of the day," "in today's world," "let's dive in"
+- **Filler metaphors.** "rich tapestry," "navigating the complexities," "the ever-evolving landscape"
+- **Em dashes.** None under 300 words, one per 500 after that
+
+### Structure — fixed by cutting and reordering
+
+- **Tricolons.** "Faster, cleaner, and easier to maintain"
+- **Paragraph symmetry.** Every paragraph the same length and shape
+- **Parallel construction.** "At X, I did Y. At Z, I did A."
+- **Uniform bullets.** "Led X / Built Y / Delivered Z"
+- **Robotic transitions.** "Furthermore," "Moreover," "Additionally"
+- **Binary contrasts.** "It's not X. It's Y."
+- **Negative listing.** "Not a framework. Not a library. A compiler."
+- **Colon reveals.** "The detail that makes it work: a separate process grades it."
+- **Rhetorical setups.** "What if I told you," "Think about it:," "Plot twist:"
+- **Faux-insight setups.** "What most people get wrong," "the part everyone misses"
+- **Superficial analysis.** Trailing clauses: "highlighting," "underscoring," "showcasing"
+- **Importance puffery.** "Stands as a testament," "marks a pivotal moment"
+- **Interpretive metadiscourse.** "This distinction matters," "as you can see"
+- **Weasel attribution.** "Experts agree," "studies show," "many argue"
+- **Synonym cycling.** Rotating agent / assistant / tool for the same thing
+- **Stacked fragments.** "That's it. That's the whole thing."
+- **Fake-profound kickers.** "The future isn't coming. It's already here."
+- **Summary-recap endings.** "In conclusion," "Ultimately," a closing restatement
+- **Formatting slop.** Emoji headings, decorative bold, headers over two sentences
+
+### Voice — fixed by deletion only
+
+- **Seesaw equivocation.** "However... on the other hand... while it's important to consider"
+- **Forced-casual overcorrection.** "Look," "here's the deal," "the other guys"
+- **Throat-clearing.** "Here's the thing," "let me be clear," "I'll be honest"
+
+### Substance — never fixed, always a question
+
+- **Missing specifics.** "Improved performance significantly"
+- **Absent constraints.** No budget, deadline, headcount, or legacy dependency anywhere
+- **No failure stories.** Every outcome a win, nothing tried that didn't work
+- **No timeline anchors.** No "during," "after," "in Q3"
+- **No named tools or competitors.** "Implemented automation"
+- **Unmeasured outcomes.** A result claimed with no number
+- **Portability test.** A sentence that could move to another company unchanged
+- **Summary voice.** "Kubernetes improves deployment scalability" instead of "we moved to Kubernetes after our deploy scripts stopped being maintainable"
+- **Flat emotional range.** One temperature start to finish
+
 ## Three decisions worth knowing about
 
 ### It asks instead of inventing
