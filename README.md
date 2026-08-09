@@ -10,7 +10,7 @@ It follows the [Agent Skills](https://agentskills.io/specification) spec, so it
 should load in any harness that reads a `SKILL.md`. Claude Code and Pi are the
 two it has actually been tested against.
 
-> **Fork this. It is tuned to one person's taste, and that person is me.**
+> **Fork this. It is tuned to for my tastes.**
 >
 > Every ruling in here is a judgment call I made for how I write: what counts as
 > slop, what counts as voice, where the line sits between editing someone's
@@ -20,7 +20,7 @@ two it has actually been tested against.
 > and the four rulings in
 > [`SKILL.md`](https://github.com/nickali/remove-ai-writing-indicators/blob/main/skills/remove-ai-writing-indicators/SKILL.md).
 > Change those and the rest keeps working. Using it unmodified means adopting
-> my ear, which is not the point.
+> my voice, which is not the point.
 
 ## Install
 
