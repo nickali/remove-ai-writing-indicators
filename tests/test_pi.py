@@ -18,7 +18,13 @@ from harness import SKILL_NAME, ModeChecks, StructureChecks, agent_tests, needs_
 
 PI_HOME = Path.home() / ".pi" / "agent"
 PI_SETTINGS = PI_HOME / "settings.json"
-PI_CLONE = PI_HOME / "git" / "github.com" / "nickali" / SKILL_NAME
+
+# Pi installs npm packages and git packages to different trees, and either is
+# a valid way to have this skill. Check both rather than assuming one.
+INSTALL_ROOTS = [
+    PI_HOME / "npm" / "node_modules" / SKILL_NAME,
+    PI_HOME / "git" / "github.com" / "nickali" / SKILL_NAME,
+]
 
 
 class TestPi(unittest.TestCase, StructureChecks, ModeChecks):
@@ -58,11 +64,17 @@ class TestPi(unittest.TestCase, StructureChecks, ModeChecks):
         )
 
     @needs_harness("pi")
-    def test_skill_files_reached_the_clone(self):
-        skill_md = PI_CLONE / "skills" / SKILL_NAME / "SKILL.md"
+    def test_skill_files_reached_an_install_root(self):
+        found = [
+            root / "skills" / SKILL_NAME / "SKILL.md"
+            for root in INSTALL_ROOTS
+            if (root / "skills" / SKILL_NAME / "SKILL.md").is_file()
+        ]
         self.assertTrue(
-            skill_md.is_file(),
-            f"expected the installed skill at {skill_md}. Run: pi update git:github.com/nickali/{SKILL_NAME}",
+            found,
+            "no installed SKILL.md under either install root:\n  "
+            + "\n  ".join(str(r) for r in INSTALL_ROOTS)
+            + f"\nRun: pi install npm:{SKILL_NAME}",
         )
 
     # --- behaviour ------------------------------------------------------

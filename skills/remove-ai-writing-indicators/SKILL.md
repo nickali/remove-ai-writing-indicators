@@ -103,6 +103,12 @@ belongs in it.
 **4. Preserve, don't polish.** Do not correct the writer's existing grammar,
 spelling, or punctuation irregularities. Do not introduce new ones either.
 
+This is literal. A missing article stays missing. A comma splice stays spliced.
+A typo stays misspelled. Do not add a word to make a phrase read correctly,
+even when the correction is obvious and the result is better English. "We cut
+attendee list" keeps its missing "the". Rearranging the sentence around such a
+slip is fine; repairing the slip is not.
+
 Ruling 4 needs its reason stated, because it will feel wrong in the moment.
 Uniformly perfect mechanics are themselves a machine signal, so correcting a
 comma splice removes evidence of a human author. Manufacturing errors is the

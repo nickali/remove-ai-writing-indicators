@@ -153,6 +153,11 @@ correcting a comma splice removes evidence that a person wrote this. Injecting
 errors on purpose is the same mechanical move in reverse, and it forges a voice
 instead of preserving one. Neither is editing.
 
+This is meant literally. A missing article stays missing, a comma splice stays
+spliced, a typo stays misspelled. The skill will rearrange a sentence around
+your slip, but it will not repair the slip, even when the correction is obvious
+and the result would read better.
+
 The honest cost: hand it a sloppy draft and you get a sloppy draft back with the
 AI patterns gone. It is not a proofreader. Run a proofreader afterward if you
 want one.

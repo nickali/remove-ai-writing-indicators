@@ -20,6 +20,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -181,20 +182,30 @@ class ModeChecks:
     """
 
     def run_mode(self, mode, workdir):
+        """Run one mode, retrying once on a non-zero exit.
+
+        Several agent invocations back to back can fail transiently on rate
+        limits or session contention. A single retry separates that from a
+        genuine failure without hiding one.
+        """
         cmd = self.build_command(PROMPT.format(skill=SKILL_NAME, mode=mode))
-        result = subprocess.run(
-            cmd,
-            cwd=workdir,
-            capture_output=True,
-            text=True,
-            timeout=AGENT_TIMEOUT,
+        for attempt in (1, 2):
+            result = subprocess.run(
+                cmd,
+                cwd=workdir,
+                capture_output=True,
+                text=True,
+                timeout=AGENT_TIMEOUT,
+            )
+            if result.returncode == 0:
+                return result.stdout
+            if attempt == 1:
+                time.sleep(20)
+
+        self.fail(
+            f"{self.harness_name} exited {result.returncode} twice for {mode} mode\n"
+            f"{result.stderr[-2000:]}"
         )
-        self.assertEqual(
-            result.returncode,
-            0,
-            f"{self.harness_name} exited {result.returncode}\n{result.stderr[-2000:]}",
-        )
-        return result.stdout
 
     def fresh_workdir(self):
         """A temp directory holding only the draft, so runs cannot see the answers."""
@@ -235,10 +246,16 @@ class ModeChecks:
         self.assertTrue(produced.is_file(), "edit mode did not write slop-draft_v2.md")
         self.assertEqual(before, sha256(source), "edit mode modified the source file")
 
-        text = produced.read_text()
         # Preserve ruling: the draft is missing an article here and the skill
-        # must not fix it.
-        self.assertIn("cut attendee list", text, "preserve ruling violated: grammar was corrected")
+        # must not fix it. Collapse whitespace first, since the phrase can land
+        # across a line break.
+        text = produced.read_text()
+        flattened = " ".join(text.split())
+        self.assertIn(
+            "cut attendee list",
+            flattened,
+            "preserve ruling violated: a missing article was added back",
+        )
         self.assertNotIn("—", text, "em dash survived in a draft under 300 words")
 
     def check_rewrite_increments(self):
