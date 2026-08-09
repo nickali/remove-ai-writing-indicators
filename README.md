@@ -10,6 +10,18 @@ It follows the [Agent Skills](https://agentskills.io/specification) spec, so it
 should load in any harness that reads a `SKILL.md`. Claude Code and Pi are the
 two it has actually been tested against.
 
+> **Fork this. It is tuned to one person's taste, and that person is me.**
+>
+> Every ruling in here is a judgment call I made for how I write: what counts as
+> slop, what counts as voice, where the line sits between editing someone's
+> words and replacing them. Some of those calls will be wrong for you. The
+> opinions live in
+> [`indicators.md`](https://github.com/nickali/remove-ai-writing-indicators/blob/main/skills/remove-ai-writing-indicators/indicators.md)
+> and the four rulings in
+> [`SKILL.md`](https://github.com/nickali/remove-ai-writing-indicators/blob/main/skills/remove-ai-writing-indicators/SKILL.md).
+> Change those and the rest keeps working. Using it unmodified means adopting
+> my ear, which is not the point.
+
 ## Install
 
 **Claude Code**
@@ -31,7 +43,7 @@ Add `-l` to install into one project instead of globally.
 The npm install follows published releases. The git install tracks `main`, so
 you get changes before they are released; Pi tells you at startup when the
 remote has moved, and `pi update --extensions` pulls it. Pin a git ref
-(`...@v1.0.0`) to freeze a version — pinned packages are deliberately skipped
+(`...@v1.0.0`) to freeze a version. Pinned packages are deliberately skipped
 by updates.
 
 ## Use
@@ -76,7 +88,7 @@ Nothing is ever written to your source file. Edit and Rewrite write a sibling
 
 Around forty patterns, sorted by what the skill is allowed to do about each one.
 
-### Surface — fixed without asking
+### Surface (fixed without asking)
 
 - **Machine vocabulary.** delve, leverage, robust, meticulous, transformative, elevate, embark, ever-evolving, tapestry
 - **Inflated verbs.** "Spearheaded the migration" for "moved us to Postgres"
@@ -85,7 +97,7 @@ Around forty patterns, sorted by what the skill is allowed to do about each one.
 - **Filler metaphors.** "rich tapestry," "navigating the complexities," "the ever-evolving landscape"
 - **Em dashes.** None under 300 words, one per 500 after that
 
-### Structure — fixed by cutting and reordering
+### Structure (fixed by cutting and reordering)
 
 - **Tricolons.** "Faster, cleaner, and easier to maintain"
 - **Paragraph symmetry.** Every paragraph the same length and shape
@@ -107,13 +119,13 @@ Around forty patterns, sorted by what the skill is allowed to do about each one.
 - **Summary-recap endings.** "In conclusion," "Ultimately," a closing restatement
 - **Formatting slop.** Emoji headings, decorative bold, headers over two sentences
 
-### Voice — fixed by deletion only
+### Voice (fixed by deletion only)
 
 - **Seesaw equivocation.** "However... on the other hand... while it's important to consider"
 - **Forced-casual overcorrection.** "Look," "here's the deal," "the other guys"
 - **Throat-clearing.** "Here's the thing," "let me be clear," "I'll be honest"
 
-### Substance — never fixed, always a question
+### Substance (never fixed, always a question)
 
 - **Missing specifics.** "Improved performance significantly"
 - **Absent constraints.** No budget, deadline, headcount, or legacy dependency anywhere
@@ -201,7 +213,7 @@ npm publish
 
 `npm version` bumps `package.json`, then a `version` lifecycle script copies
 that number into `plugin.json` and stages it, then npm commits both and tags
-the result. There is no separate sync step to remember, and no git hook — a
+the result. There is no separate sync step to remember, and no git hook. A
 hook would run on every commit whether or not a version changed, and would
 fight `npm version` for control of the same files.
 
