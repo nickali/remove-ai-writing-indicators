@@ -28,7 +28,7 @@ No mode word means Detect. A mode word you don't recognize means ask, not guess.
 
 > **Detect mode.** Naming every indicator that fires and quoting the line. No fixes, no rewriting, no file written.
 
-> **Suggest mode.** Naming every indicator that fires, quoting the line, and proposing one fix each. You apply them. No file written.
+> **Suggest mode.** Naming every indicator that fires, quoting the line, and proposing a fix where there is one to propose. You apply them. No file written.
 
 > **Edit mode.** Returning a full edited draft, changed only by cutting and rearranging words already on the page. No new sentences composed. Writes a new numbered file beside the original.
 
@@ -39,9 +39,12 @@ What each mode produces:
 | Mode | Writes a file | Output |
 |---|---|---|
 | Detect | no | Findings: indicator, quoted line, why it fires |
-| Suggest | no | Findings plus one proposed fix each |
+| Suggest | no | Findings plus a fix for the three groups that have one |
 | Edit | yes | Full draft, cut and rearranged only |
 | Rewrite | yes | Full draft, new prose permitted |
+
+Judgment and Substance findings appear in all four, quoted, and are fixed in
+none of them.
 
 The modes are ordered by how much of the final text is the writer's. Detect is
 the default so the low-intervention path is the one taken by accident.
@@ -52,9 +55,10 @@ Read the source. Never write to it.
 
 Detect and Suggest write nothing at all.
 
-Edit and Rewrite write a sibling file with a version number before the
-extension. **Before writing, list the directory and find the highest existing
-version, then write the next one.** Never overwrite a file that already exists.
+Edit and Rewrite produce a sibling file with a version number before the
+extension, by copying the source to that name and patching the copy. **Before
+copying, list the directory and find the highest existing version, then take
+the next one.** Never overwrite a file that already exists.
 
 ```
 post.mdx                      → write post_v2.mdx
@@ -68,26 +72,59 @@ comparison they may have wanted.
 If the user pastes text instead of giving a path, work on the pasted text and
 return the result in conversation. Create no file.
 
+## Producing an edit
+
+**Never write the output file in one pass, and never type out a line you are
+not fixing.** Patch a copy of the source instead:
+
+1. Copy the source to the new filename, byte for byte. Use a file copy, not a
+   write: you should not have the document's text in your output at all.
+2. Apply the findings to that copy as separate exact-replacement edits, one per
+   finding. Each edit names the text you quoted and what it becomes. Nothing
+   else in the file is touched.
+3. Quote enough to land once. "Utilize" can appear a dozen times in a page of
+   checklists, so carry as much of the surrounding line as it takes to make the
+   span unique, and no more.
+
+A line with no finding on it is never retyped, so it cannot drift. That is the
+whole reason for working this way. A draft regenerated from the top loses
+things quietly: a list comes back a member shorter, a trailing clause goes
+missing, a verb changes. None of it surfaces as a finding anybody could point
+at, and all of it is content the writer put there on purpose.
+
+One replacement per finding, not one per line. A fix that spans more than a
+line (merging two paragraphs, reordering a pair of sentences) is a single
+replacement covering the whole affected span.
+
+When the user pastes text instead of giving a path there is no file to copy.
+Return the edited text in conversation and hold to the same discipline:
+everything you were not sent to fix comes back verbatim.
+
 ## Groups
 
-`indicators.md` sorts every pattern into four groups. The group decides what you
+`indicators.md` sorts every pattern into five groups. The group decides what you
 may do:
 
 - **Surface** — vocabulary and punctuation. Fix without asking.
-- **Structure** — how the prose is shaped. Fix by cutting and reordering words already present.
+- **Structure** — how the prose is shaped. Fix by cutting and reordering words already present. Prose is the operative word: in a list, see ruling 5.
 - **Voice** — how the writer comes across. Fix by deletion only, never by composing a replacement.
+- **Judgment** — a real pattern whose every available fix would cost content the writer chose. **Reported in every mode, fixed in none.** Quote it and leave it.
 - **Substance** — the fix needs a fact or a reaction only the writer has. **Never fixed, in any mode.** Each becomes a question.
 
-Substance is the rule that matters most. A Substance finding means the draft is
-missing something you do not have. Ask for it. Never supply a number, date,
-name, source, quote, outcome, or feeling that the writer did not.
+Two of the five are never fixed, for opposite reasons. Substance is a gap: the
+draft is missing something you do not have, so you ask for it. Judgment is the
+reverse — everything is present, and every fix on offer deletes some of it, so
+the call belongs to the writer. Show them what fired and move on.
+
+Substance is the rule that matters most. Never supply a number, date, name,
+source, quote, outcome, or feeling that the writer did not.
 
 This holds in Rewrite mode too. Rewrite lets you compose sentences; it does not
 let you compose facts.
 
 ## Rulings
 
-Four cases where the obvious edit is wrong:
+Five cases where the obvious edit is wrong:
 
 **1. Fragments.** Cut stacked fragments used for drama ("That's it. That's the
 whole thing."). Keep isolated fragments that vary cadence. Rhythm variation
@@ -107,13 +144,31 @@ This is literal. A missing article stays missing. A comma splice stays spliced.
 A typo stays misspelled. Do not add a word to make a phrase read correctly,
 even when the correction is obvious and the result is better English. "We cut
 attendee list" keeps its missing "the". Rearranging the sentence around such a
-slip is fine; repairing the slip is not.
+slip is fine; repairing the slip is not. When you edit a span that contains one,
+leave it and name it under **What changed**, so the writer decides.
 
 Ruling 4 needs its reason stated, because it will feel wrong in the moment.
 Uniformly perfect mechanics are themselves a machine signal, so correcting a
 comma splice removes evidence of a human author. Manufacturing errors is the
 same mechanical thinking one layer down, and it forges a voice instead of
 preserving one. Remove AI patterns. Leave the rough edges where they are.
+
+**5. A list is content, not rhythm.** In a list item, a heading, or a table cell,
+deletion is off the table. Do not delete the item. Do not delete a term inside
+it. Do not delete a parent whose children you keep.
+
+"Blog posts, videos, or infographics" in a bullet is three deliverables, not
+three beats. A bullet reading "Leverage industry thought leadership" is a task
+with the wrong verb on it, not a line to cut: replace the verb and keep the
+task.
+
+Surface fixes still apply. Swap the machine word, drop the empty adverb, leave
+the item standing.
+
+The check, before you write: **every list item in the source appears in the
+output, and every term inside it survives.** Count them if the draft is mostly
+list items, because then it is reference material and someone is working down it
+line by line.
 
 Hand this skill a sloppy draft and it returns a sloppy draft with the AI
 patterns gone. That is the intended behavior.
@@ -128,22 +183,36 @@ patterns gone. That is the intended behavior.
    polish. Keep this note to yourself.
 5. Scan against `indicators.md`, collecting findings by group.
 6. Produce the output for the selected mode.
-7. For Edit and Rewrite, re-read what you produced against the four rulings and
-   the voice traits from step 4 before writing the file. If anything fails, fix
-   it and check again.
-8. Report Substance findings as questions in every mode, including Edit and
-   Rewrite. They go after the draft, under **Questions only you can answer**.
+7. For Edit and Rewrite, diff the file you wrote against the source. Patched
+   correctly, that diff is your findings list and nothing else. Anything in it
+   you cannot name a finding for is drift: put it back. Then re-read the result
+   against the rulings and the voice traits from step 4.
+8. Report Judgment and Substance findings in every mode, including Edit and
+   Rewrite. They go after the draft, under **Judgment: your call** and
+   **Questions only you can answer**. Both carry the quoted text, so the writer
+   can see what fired without opening the file.
 
 ## Output
 
-For Detect and Suggest: findings grouped by Surface, Structure, Voice,
+For Detect and Suggest: findings grouped by Surface, Structure, Voice, Judgment,
 Substance. Each finding names the indicator, quotes the line, and says why it
-fires. Suggest adds one fix per finding. Substance findings carry a question
-instead of a fix, in both modes.
+fires. Suggest adds one fix per finding, except in the two groups that have no
+fix: Judgment findings carry the quoted passage and nothing else, Substance
+findings carry a question.
 
-For Edit and Rewrite: the full draft, the file path written, a short **What
-changed** section, and **Questions only you can answer** for the Substance
-findings.
+**Every mode quotes the Judgment and Substance passages, including Edit and
+Rewrite.** These are the findings the writer has to handle, and a finding they
+cannot see is a finding that does not exist. Naming the indicator without the
+text it fired on makes them go hunting; quote enough to be found.
+
+For Edit and Rewrite: the file path written, the **diff between the source and
+what you wrote**, a short **What changed** section, then **Judgment: your call**
+with the quoted passages, then **Questions only you can answer** for the
+Substance findings.
+
+Show the diff, do not describe it. Every hunk in it should be a finding you can
+name. If one is not, you changed something nobody asked you to change, and it
+goes back before you report.
 
 Never score the draft, estimate a probability, or claim that a machine wrote it.
 Name patterns. A named pattern is evidence the writer can check. A score is a

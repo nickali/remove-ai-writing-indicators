@@ -17,7 +17,7 @@ two it has actually been tested against.
 > words and replacing them. Some of those calls will be wrong for you. The
 > opinions live in
 > [`indicators.md`](https://github.com/nickali/remove-ai-writing-indicators/blob/main/skills/remove-ai-writing-indicators/indicators.md)
-> and the four rulings in
+> and the rulings in
 > [`SKILL.md`](https://github.com/nickali/remove-ai-writing-indicators/blob/main/skills/remove-ai-writing-indicators/SKILL.md).
 > Change those and the rest keeps working. Using it unmodified means adopting
 > my voice, which is not the point.
@@ -84,6 +84,19 @@ problem. Rewrite lifts the constraint and says so in its banner.
 Nothing is ever written to your source file. Edit and Rewrite write a sibling
 `_v2` file next to the original, incrementing if that name is taken.
 
+That sibling is made by copying your source and patching the copy, one
+replacement per finding. Nothing is retyped from memory. This matters more than
+it sounds: a model asked to write out a long document from the top loses things
+along the way, a list item here, a trailing clause there, none of it flagged as
+a change and none of it visible unless you diff. Patching a copy means the only
+lines that can differ are the ones a finding pointed at.
+
+The copy carries the original's frontmatter verbatim, including `title` and
+anything controlling publication. In a static-site content collection (Astro,
+Hugo, Eleventy) the `_v2` file is a second live page with a duplicate title
+until you deal with it. The output is meant to replace the original after you
+diff it, not to live beside it.
+
 ## What it catches
 
 Around forty patterns, sorted by what the skill is allowed to do about each one.
@@ -99,10 +112,7 @@ Around forty patterns, sorted by what the skill is allowed to do about each one.
 
 ### Structure (fixed by cutting and reordering)
 
-- **Tricolons.** "Faster, cleaner, and easier to maintain"
-- **Paragraph symmetry.** Every paragraph the same length and shape
 - **Parallel construction.** "At X, I did Y. At Z, I did A."
-- **Uniform bullets.** "Led X / Built Y / Delivered Z"
 - **Robotic transitions.** "Furthermore," "Moreover," "Additionally"
 - **Binary contrasts.** "It's not X. It's Y."
 - **Negative listing.** "Not a framework. Not a library. A compiler."
@@ -125,6 +135,16 @@ Around forty patterns, sorted by what the skill is allowed to do about each one.
 - **Forced-casual overcorrection.** "Look," "here's the deal," "the other guys"
 - **Throat-clearing.** "Here's the thing," "let me be clear," "I'll be honest"
 
+### Judgment (never fixed, always shown)
+
+Real tells, but every available fix deletes something you chose to write. You
+get the pattern named and the passage quoted, in all four modes, and you decide.
+
+- **Tricolons.** "Faster, cleaner, and easier to maintain". Prose only: three things in a bullet are three things to do, not a rhythm
+- **Paragraph symmetry.** Every paragraph the same length and shape
+- **Uniform bullets.** "Led X / Built Y / Delivered Z"
+- **Bullet overload.** A list where two sentences of prose would read better
+
 ### Substance (never fixed, always a question)
 
 - **Missing specifics.** "Improved performance significantly"
@@ -137,13 +157,13 @@ Around forty patterns, sorted by what the skill is allowed to do about each one.
 - **Summary voice.** "Kubernetes improves deployment scalability" instead of "we moved to Kubernetes after our deploy scripts stopped being maintainable"
 - **Flat emotional range.** One temperature start to finish
 
-## Three decisions worth knowing about
+## Four decisions worth knowing about
 
 ### It asks instead of inventing
 
-Findings are sorted into four groups by what the skill is allowed to do about
-them: surface vocabulary, structure, voice, and substance. The first three get
-fixed. The fourth never does.
+Findings are sorted into five groups by what the skill is allowed to do about
+them: surface vocabulary, structure, voice, judgment, and substance. The first
+three get fixed. The last two never do.
 
 A substance finding means the draft is vague because a detail is missing, and
 the only person who has that detail is you. Which competitor. What the number
@@ -154,6 +174,35 @@ lets it compose sentences. It does not let it compose facts.
 This is the difference between an editor and a plausible-text generator. A
 generator would close those gaps for you, and the result would be confident,
 smooth, and partly false.
+
+### Some patterns are shown to you, not fixed
+
+Four indicators are real tells that the skill deliberately will not act on:
+tricolons, paragraph symmetry, uniform bullets, and bullet overload. It names
+them, quotes the passage, and hands them back to you. That happens in all four
+modes, Edit and Rewrite included.
+
+The reason is a line the skill applies to its own other groups. A fix is safe
+when it removes *packaging* and leaves your claim standing — that is what
+happens when it cuts "it's worth noting that," or "Furthermore," or "here's the
+thing." You lose nothing you meant.
+
+These four are different. Every fix available for them removes *content*.
+"Cut the tricolon to two" deletes one of three things you chose to list.
+"Merge the symmetrical paragraphs" deletes a sentence. "Convert the bullets to
+prose" restructures a section wholesale. And choosing which member of a list is
+expendable takes knowing which one matters, which is a judgment about what the
+piece is for. That is yours.
+
+The cost of getting this wrong is asymmetric, which is what settled it. A tell
+left in a draft is a sentence that reads slightly machine-made. A member deleted
+from a list is information gone, and gone invisibly — it does not show up in a
+diff you were not already reading closely. One of those you can fix later. The
+other you have to notice first.
+
+This was not a design instinct. It came out of a run against two real reference
+pages that lost five checklist items to the tricolon fix, each one an
+instruction somebody was meant to follow.
 
 ### It preserves, it does not polish
 
@@ -190,15 +239,65 @@ The skill never scores a draft or estimates a probability that a machine wrote
 it. It names patterns and quotes lines. A named pattern is evidence you can
 check yourself. A score is somebody else's guess.
 
-## Fixture
+## Known limitations
 
-`examples/slop-draft.md` is a deliberately bad draft.
-`examples/expected-findings.md` is what Detect should report on it. Useful for
-checking the skill still behaves after you edit `SKILL.md` or `indicators.md`.
+Things the skill does not solve, as distinct from things it deliberately
+refuses to do.
 
-They are separate files on purpose. Keep the expected findings out of the run —
-if the answers are in context, the model copies them instead of finding them,
-and the check proves nothing.
+**It is not deterministic.** Two runs over the same draft find different sets of
+findings and produce different edits. Nothing in here is a parser, and none of
+it is a guarantee. Diff any output you intend to keep.
+
+**Pasted text has no copy to patch.** Edit and Rewrite protect your words by
+copying the file and replacing only the spans a finding quoted. Paste text
+instead of giving a path and there is no file, so that protection is gone and a
+long paste can come back quietly shortened. Give it a path for anything past a
+few paragraphs.
+
+**A quoted span has to be unique to patch safely.** The skill is told to carry
+enough surrounding context that each replacement matches in exactly one place.
+In a draft that repeats a phrase often enough, a fix can still land on the wrong
+occurrence. This is the failure mode to watch for in a diff.
+
+**Recall on a long document is not guaranteed.** Scanning forty patterns across
+a 500-line reference page will miss some. What it reports is real. What it does
+not report is not a clean bill of health.
+
+**Edit mode on list-heavy drafts is the failure mode to watch.**
+
+A page that is mostly nested bullets is the shape most likely to lose content:
+a member from a three-item list, a trailing clause, sometimes a verb. The losses
+are quiet, because they land on lines no indicator fired on and so never show up
+in the **What changed** report.
+
+Measured on `examples/checklist-draft.md`, a 28-line checklist with six
+three-part lists. Seven runs of an earlier version of the rules lost two to four
+list members every time, and a different set each time. The current rules —
+ruling 5, tricolons scoped to prose, the deletion-shaped fixes moved into
+Judgment, and the copy-then-patch procedure in **Producing an edit** — hold all
+eighteen members and the list count, which `tests/` asserts on every agent run.
+
+That is one fixture passing, not a proof. The underlying pressure has not gone
+anywhere: writing a long document out is an act of regeneration, and
+regeneration compresses. On a 500-line reference page, diff the output.
+
+## Fixtures
+
+Two drafts, testing opposite halves of the skill.
+
+`examples/slop-draft.md` is a deliberately bad piece of prose, and
+`examples/expected-findings.md` is what Detect should report on it.
+
+`examples/checklist-draft.md` is reference material: nested bullets, six
+tricolons, every one of them a list of things to do rather than a rhythm.
+`examples/expected-findings-checklist.md` is mostly a list of edits that would
+be *wrong*. It exists because a real Edit run on two checklist pages quietly
+deleted five list items to satisfy the tricolon rule, which is how ruling 5 got
+written.
+
+Answers live in separate files on purpose. Keep them out of the run — if they
+are in context the model copies them instead of finding them, and the check
+proves nothing.
 
 ## Releasing
 
@@ -243,6 +342,11 @@ Rewrite increments to `_v3` rather than clobbering an existing `_v2`, and the
 draft's missing article survives both write modes. Each run happens in a
 throwaway temp directory holding one copy of the draft.
 
+The checklist run is the strictest of them. Every member of every tricolon in
+that fixture is a string that appears exactly once, so the test can prove by
+presence that nothing was deleted, while still allowing the fixes ruling 5 does
+permit: resequencing, splitting an entry, changing a connector.
+
 ## License
 
 MIT
@@ -251,6 +355,6 @@ MIT
 
 This builds on [no-ai-slop](https://github.com/petergyang/no-ai-slop) by Peter
 Yang, reorganized around my own taste and my own rules about what an editor is
-allowed to do on your behalf. The four-group structure, the four modes, the
-substance rule, and the preserve-don't-polish ruling are mine. A good share of
-the pattern list started as his.
+allowed to do on your behalf. The group structure, the four modes, the substance
+and judgment rules, and the preserve-don't-polish ruling are mine. A good share
+of the pattern list started as his.

@@ -29,15 +29,19 @@ SKILL_NAME = "remove-ai-writing-indicators"
 SKILL_DIR = REPO_ROOT / "skills" / SKILL_NAME
 FIXTURE = REPO_ROOT / "examples" / "slop-draft.md"
 
-GROUP_NAMES = ["Surface", "Structure", "Voice", "Substance"]
+# Prose fixture and checklist fixture test different halves of the skill. The
+# checklist one exists because deletion-shaped Structure fixes are correct in
+# prose and wrong in an enumeration, where each member is an instruction.
+CHECKLIST = REPO_ROOT / "examples" / "checklist-draft.md"
+
+GROUP_NAMES = ["Surface", "Structure", "Voice", "Judgment", "Substance"]
+
+LIST_ITEM = re.compile(r"^\s*([-*+]|\d+\.)\s", re.M)
 
 # One agent run can take several minutes on a slow provider.
 AGENT_TIMEOUT = 600
 
-PROMPT = (
-    "Use the {skill} skill in {mode} mode on slop-draft.md. "
-    "Read only that file."
-)
+PROMPT = "Use the {skill} skill in {mode} mode on {file}. Read only that file."
 
 agent_tests = unittest.skipUnless(
     os.environ.get("SKILL_AGENT_TESTS") == "1",
@@ -170,9 +174,16 @@ class StructureChecks:
         self.assertTrue(FIXTURE.is_file())
         self.assertTrue(expected.is_file())
 
-        draft = FIXTURE.read_text()
-        for marker in ("Expected", "Machine vocabulary", "Preserve ruling"):
-            self.assertNotIn(marker, draft, "answer key leaked into the draft fixture")
+        checklist_expected = REPO_ROOT / "examples" / "expected-findings-checklist.md"
+        self.assertTrue(CHECKLIST.is_file())
+        self.assertTrue(checklist_expected.is_file())
+
+        for fixture in (FIXTURE, CHECKLIST):
+            draft = fixture.read_text()
+            for marker in ("Expected", "Machine vocabulary", "Preserve ruling", "ruling 5"):
+                self.assertNotIn(
+                    marker, draft, f"answer key leaked into {fixture.name}"
+                )
 
 
 class ModeChecks:
@@ -181,14 +192,16 @@ class ModeChecks:
     Subclasses provide build_command() and a human-readable harness_name.
     """
 
-    def run_mode(self, mode, workdir):
+    def run_mode(self, mode, workdir, filename=FIXTURE.name):
         """Run one mode, retrying once on a non-zero exit.
 
         Several agent invocations back to back can fail transiently on rate
         limits or session contention. A single retry separates that from a
         genuine failure without hiding one.
         """
-        cmd = self.build_command(PROMPT.format(skill=SKILL_NAME, mode=mode))
+        cmd = self.build_command(
+            PROMPT.format(skill=SKILL_NAME, mode=mode, file=filename)
+        )
         for attempt in (1, 2):
             result = subprocess.run(
                 cmd,
@@ -207,11 +220,11 @@ class ModeChecks:
             f"{result.stderr[-2000:]}"
         )
 
-    def fresh_workdir(self):
+    def fresh_workdir(self, fixture=FIXTURE):
         """A temp directory holding only the draft, so runs cannot see the answers."""
         workdir = Path(tempfile.mkdtemp(prefix="raiwi-"))
         self.addCleanup(shutil.rmtree, workdir, True)
-        shutil.copy(FIXTURE, workdir / "slop-draft.md")
+        shutil.copy(fixture, workdir / fixture.name)
         return workdir
 
     def assert_wrote_nothing(self, workdir, output, banner_word):
@@ -257,6 +270,48 @@ class ModeChecks:
             "preserve ruling violated: a missing article was added back",
         )
         self.assertNotIn("—", text, "em dash survived in a draft under 300 words")
+
+    def check_edit_checklist(self):
+        """Ruling 5: in an enumeration, no fix may drop a member.
+
+        Every member below is unique in the fixture, so a plain presence check
+        proves nothing was cut. Resequencing and connector changes still pass,
+        which is the point: the rule bans deletion, not rearrangement.
+        """
+        workdir = self.fresh_workdir(CHECKLIST)
+        source = workdir / CHECKLIST.name
+        before = sha256(source)
+
+        self.run_mode("edit", workdir, CHECKLIST.name)
+
+        produced = workdir / "checklist-draft_v2.md"
+        self.assertTrue(produced.is_file(), "edit mode did not write checklist-draft_v2.md")
+        self.assertEqual(before, sha256(source), "edit mode modified the source file")
+
+        text = produced.read_text()
+
+        # Without this the test passes on a copy that was never edited.
+        lowered = text.lower()
+        for word in ("utilize", "leverage"):
+            self.assertNotIn(word, lowered, f"{word} survived the Surface pass")
+
+        for member in (
+            "company size", "vertical", "renewal date",
+            "goals", "blockers", "workarounds",
+            "prices", "discounts", "promo tactics",
+            "public records", "filings", "earnings calls",
+            "blog posts", "videos", "infographics",
+            "likes", "shares", "comments",
+        ):
+            self.assertIn(member, text, f"a list member was deleted: {member!r}")
+
+        # Splitting a tricolon across two entries is allowed and raises this
+        # count. Converting the checklist to prose lowers it, and is not.
+        self.assertGreaterEqual(
+            len(LIST_ITEM.findall(text)),
+            len(LIST_ITEM.findall(CHECKLIST.read_text())),
+            "a checklist entry was merged away or converted to prose",
+        )
 
     def check_rewrite_increments(self):
         """Rewrite must not clobber an earlier run's output."""

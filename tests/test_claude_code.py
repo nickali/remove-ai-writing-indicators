@@ -83,6 +83,10 @@ class TestClaudeCode(unittest.TestCase, StructureChecks, ModeChecks):
         self.check_edit()
 
     @agent_tests
+    def test_edit_mode_keeps_checklist_members(self):
+        self.check_edit_checklist()
+
+    @agent_tests
     def test_rewrite_mode_increments_filename(self):
         self.check_rewrite_increments()
 

@@ -15,8 +15,6 @@ and the check proves nothing.
 
 ## Structure
 
-- **Tricolon** — "productivity — and morale — and focus"
-- **Tricolon** — "we shortened the meeting, we added an agenda, and we cut attendee list"
 - **Robotic transition** — "Furthermore, asynchronous communication improves..."
 - **Colon reveal** — "The result: engagement improved significantly."
 - **Weasel attribution** — "some argue that async-first is the future" and "Studies show that teams who adopt async practices see better outcomes". No source named, so this escalates to a Substance question
@@ -28,6 +26,14 @@ and the check proves nothing.
 
 - **Throat-clearing** — "Here's the thing about meetings:"
 - **Seesaw equivocation** — "However, it's important to consider... On the other hand, some argue..."
+
+## Judgment
+
+Reported with the line quoted, never fixed, in all four modes. Edit and Rewrite
+output should still contain both of these intact.
+
+- **Tricolon** — "productivity — and morale — and focus". The em dashes go, all three nouns stay
+- **Tricolon** — "we shortened the meeting, we added an agenda, and we cut attendee list"
 
 ## Substance
 

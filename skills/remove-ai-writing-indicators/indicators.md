@@ -18,7 +18,18 @@ transformative, elevate, embark, harness, ever-evolving, tapestry, realm,
 beacon, multifaceted, comprehensive, innovative, testament, paradigm shift, game
 changer, supercharge.
 → Replace with the plain word. "Utilize" is "use." "Facilitate" is usually
-"run," "host," or "let." If no plain word fits, the sentence was empty.
+"run," "host," or "let." If no plain word fits, the sentence was empty and goes.
+**In a list item it never goes** — a bullet with the wrong verb on it is still a
+task somebody has to do. Replace the verb in place, or leave the line and flag
+it.
+→ **Pick the replacement per sentence, not per draft.** "Leverage" has no one
+clean synonym. It is "use" here, "mine" there, "follow" or "partner with"
+elsewhere, depending on what is being leveraged. Check the neighboring lines
+before settling. Swapping one overused word for one repeated word is not a fix.
+→ **Keep the object.** "Enhance user comprehension" is not "help users
+understand," which drops what they understand. If the plain verb cannot carry
+the object, cut the phrase rather than leave it dangling. Composing a
+replacement clause is Rewrite mode only.
 
 **Inflated verbs.** spearheaded, orchestrated, architected, strategized,
 synergize.
@@ -52,24 +63,9 @@ one to cut.
 How the prose is shaped. **Fixable by cutting and reordering words already
 present.** Compose nothing new.
 
-**Paragraph symmetry.** Paragraphs of near-identical length and shape running
-down the page.
-→ Merge two, or cut one to a single line. Unevenness is the fix.
-
 **Parallel construction.** "At X, I did Y. At Z, I did A." The same template
 refilled.
 → Break the pattern on at least one instance. Reorder so the subject moves.
-
-**Tricolons.** Listing exactly three things, repeatedly. "Faster, cleaner, and
-easier to maintain."
-→ Cut to two, or extend to four, or replace with the one that matters.
-
-**Uniform bullets.** Every bullet the same length, every one opening with a past
-tense verb. "Led X / Built Y / Delivered Z."
-→ Vary length. Let one bullet be a fragment and another two sentences.
-
-**Bullet overload.** A list where two sentences of prose would read better.
-→ Convert to prose. Lists are for things that are genuinely parallel.
 
 **Robotic transitions.** Furthermore, Moreover, Additionally, Consequently,
 starting a paragraph.
@@ -160,6 +156,45 @@ no claim remains, flag it as a Substance question.
 **Throat-clearing.** Announcing a point instead of making it. "Here's the
 thing," "let me be clear," "I'll be honest," "the uncomfortable truth is."
 → Delete. The point starts one clause later.
+
+---
+
+## Judgment
+
+**Real patterns, but every available fix costs content the writer chose to put
+there.** Reported in every mode, fixed in none. Quote the passage, say what
+fires, and leave it alone.
+
+Substance findings are gaps: something is missing and only the writer has it.
+These are the opposite. The material is all present, and the only fixes on offer
+delete some of it. Which member of a list is expendable, which sentence in a
+symmetrical run can go, whether these bullets are better as prose. Those are
+decisions about what the piece is for, and the writer is the one who knows.
+
+Report them where the writer can act on them and stop there. An unfixed finding
+they can see beats a confident edit that quietly costs them a line.
+
+**Tricolons.** Listing exactly three things, repeatedly. "Faster, cleaner, and
+easier to maintain."
+→ Quote the list. Cutting to two removes something the writer chose to include,
+and choosing which one goes means knowing which one matters.
+
+→ **Prose only.** Three things inside a list item, a heading, or a table cell is
+not a tricolon at all. There the third thing is something the reader has to do,
+not a beat in a sentence. Do not report it. See ruling 5.
+
+**Paragraph symmetry.** Paragraphs of near-identical length and shape running
+down the page.
+→ Quote the opening of each and say how many in a row. Merging or trimming them
+means deciding which sentences are expendable.
+
+**Uniform bullets.** Every bullet the same length, every one opening with a past
+tense verb. "Led X / Built Y / Delivered Z."
+→ Quote two or three of them. Varying the shape means rewriting the entries.
+
+**Bullet overload.** A list where two sentences of prose would read better.
+→ Quote the list and say how long it runs. Converting it restructures the
+section, and in reference material it destroys the thing the page is for.
 
 ---
 
