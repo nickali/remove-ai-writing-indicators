@@ -1,0 +1,83 @@
+# Surface-group phrases, for measuring what Edit mode missed.
+#
+# One phrase per line, matched case-insensitively at word boundaries. Blank
+# lines and lines starting with # are ignored.
+#
+# SCOPE: Surface only, and not all of it. Surface is the one group whose
+# entries are "fix without asking", which is what makes a literal match a real
+# finding rather than a question. The other four groups depend on where the
+# text sits or on what the writer meant, and no regex settles either.
+#
+# Deliberately excluded: the Empty adverbs entry (just, literally, simply,
+# actually, truly...). The catalogue itself says to keep those when they carry
+# emphasis, contrast, uncertainty or spoken rhythm, so a hit there is a
+# question and this file is for things that are answers.
+#
+# Every phrase here must also appear in indicators.md; a test asserts it, so
+# deleting an entry from the catalogue fails the suite until this file follows.
+
+# machine vocabulary
+delve
+foster
+leverage
+utilize
+facilitate
+empower
+streamline
+robust
+cutting-edge
+meticulous
+intricate
+paramount
+transformative
+elevate
+embark
+harness
+ever-evolving
+tapestry
+realm
+beacon
+multifaceted
+comprehensive
+innovative
+testament
+paradigm shift
+game changer
+supercharge
+
+# inflated verbs
+spearheaded
+orchestrated
+architected
+strategized
+synergize
+
+# empty phrases
+it's worth noting
+it's important to note
+at the end of the day
+when it comes to
+at its core
+in today's world
+in the age of
+the reality is
+the truth is
+in terms of
+in order to
+going forward
+in this article
+let's dive in
+
+# filler metaphors
+rich tapestry
+navigating the complexities
+the ever-evolving landscape
+breaking barriers
+a double-edged sword
+
+# copula dodges
+serves as
+stands as
+functions as
+acts as
+operates as

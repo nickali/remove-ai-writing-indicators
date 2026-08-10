@@ -51,10 +51,26 @@ let's dive in.
 ever-evolving landscape, breaking barriers, a double-edged sword.
 → Cut. Replace with the thing itself if a claim was hiding inside.
 
+**Copula dodges.** serves as, stands as, functions as, acts as, operates as,
+represents, constitutes, marks, all standing in for "is" or "are".
+→ Use the plain verb. "Gallery 825 serves as the exhibition space" is "Gallery
+825 is the exhibition space." The dodge exists to avoid repeating "is", which
+was never a problem worth solving.
+
+**Decorative unicode.** Curly quotes and apostrophes, arrows, bullet
+characters, ellipsis characters, non-breaking spaces, in a document whose other
+text is plain ASCII.
+→ Match what the rest of the draft uses, and what its neighbouring files use if
+it lives in a directory of them. Consistency is the test, not purity: a file
+that is curly throughout stays curly. An arrow doing real work in a diagram or
+a code sample stays.
+
 **Em dashes.** None in drafts under 300 words. At most one per 500 words beyond
 that, and only where it clearly beats a comma, period, or parentheses.
 → Remove clusters first. A dash used for rhythm rather than structure is the
 one to cut.
+→ A double hyphen (`--`) between spaces is the same habit in disguise and
+counts against the same allowance.
 
 ---
 
@@ -195,6 +211,19 @@ tense verb. "Led X / Built Y / Delivered Z."
 **Bullet overload.** A list where two sentences of prose would read better.
 → Quote the list and say how long it runs. Converting it restructures the
 section, and in reference material it destroys the thing the page is for.
+
+**Invented concept labels.** An abstract noun (paradox, trap, creep, divide,
+gap, tax, flywheel) bolted onto a domain word and then used as though it named
+something already known: "the supervision paradox," "workload creep."
+→ Quote each one and say how many there are. A label that carries a real
+distinction is worth keeping and worth defining; a label dressing up an ordinary
+observation should go. Which one it is depends on what the writer meant by it.
+
+**The dead metaphor.** One metaphor carried across the whole piece, five or ten
+times over, long after it stopped explaining anything.
+→ Count the appearances and quote two or three. Thinning it means deciding which
+instances still carry the idea, and that is a reading of the argument, not a
+cut.
 
 ---
 

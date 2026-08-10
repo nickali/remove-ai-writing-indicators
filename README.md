@@ -108,7 +108,9 @@ Around forty patterns, sorted by what the skill is allowed to do about each one.
 - **Empty adverbs.** just, literally, simply, truly, fundamentally, crucially
 - **Empty phrases.** "It's worth noting," "at the end of the day," "in today's world," "let's dive in"
 - **Filler metaphors.** "rich tapestry," "navigating the complexities," "the ever-evolving landscape"
-- **Em dashes.** None under 300 words, one per 500 after that
+- **Copula dodges.** "serves as," "stands as," "represents a," standing in for plain "is"
+- **Decorative unicode.** Curly quotes, arrows, bullet characters in a file whose other text is plain ASCII
+- **Em dashes.** None under 300 words, one per 500 after that. A spaced `--` counts the same
 
 ### Structure (fixed by cutting and reordering)
 
@@ -144,6 +146,8 @@ get the pattern named and the passage quoted, in all four modes, and you decide.
 - **Paragraph symmetry.** Every paragraph the same length and shape
 - **Uniform bullets.** "Led X / Built Y / Delivered Z"
 - **Bullet overload.** A list where two sentences of prose would read better
+- **Invented concept labels.** "the supervision paradox," "workload creep" — a label doing the work of an argument
+- **The dead metaphor.** One metaphor carried five or ten times through a piece
 
 ### Substance (never fixed, always a question)
 
@@ -340,14 +344,30 @@ that fixture is a string that appears exactly once, so the test can prove by
 presence that nothing was deleted, while still allowing the fixes ruling 5 does
 permit: resequencing, splitting an entry, changing a connector.
 
+The skill sweeps its own Surface list entry by entry before writing, rather
+than reading once and reporting what stood out, because that group is the only
+one where a miss is unambiguous. `tests/surface-phrases.txt` checks whether the
+sweep worked: it measures what the skill *missed*. After each Edit run the output is scanned for Surface-group phrases,
+and anything still there is a miss rather than a judgment call, because Surface
+is the group defined as "fix without asking". It covers that group only. The
+other four depend on where the text sits or on what the writer meant, and no
+regex settles either — a tricolon in a bullet and a tricolon in a paragraph are
+the same string and different findings. Empty adverbs are left out for the same
+reason: the catalogue says keep them when they carry emphasis, so a hit there is
+a question, not an answer.
+
+A test asserts every scanned phrase also appears in the Surface group of
+`indicators.md`, so the scanner can never fail a run over a word the skill was
+never told to fix.
+
 ## License
 
 MIT
 
 ## Acknowledgements
 
-This builds on [no-ai-slop](https://github.com/petergyang/no-ai-slop) by Peter
-Yang, reorganized around my own taste and my own rules about what an editor is
-allowed to do on your behalf. The group structure, the four modes, the substance
-and judgment rules, and the preserve-don't-polish ruling are mine. A good share
-of the pattern list started as his.
+Built on the work of:
+
+- [no-ai-slop](https://github.com/petergyang/no-ai-slop)
+- [AI Writing Tropes to Avoid](https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1) and [tropes.fyi](https://tropes.fyi/directory)
+- [unsloppify](https://github.com/woerndl/unsloppify)

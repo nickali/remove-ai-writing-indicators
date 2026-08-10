@@ -132,6 +132,7 @@ reads as human; drumbeat repetition reads as machine.
 
 **2. Em dashes.** None in drafts under 300 words. At most one per 500 words
 beyond that, and only where it clearly beats a comma, period, or parentheses.
+A double hyphen between spaces counts against the same allowance.
 
 **3. Vague abstraction is a question, not an edit.** When a sentence is empty
 because a detail is missing, that is Substance. Flag the slot and ask what
@@ -182,15 +183,23 @@ patterns gone. That is the intended behavior.
    vocabulary, cadence, bluntness, humor, uncertainty, digressions, level of
    polish. Keep this note to yourself.
 5. Scan against `indicators.md`, collecting findings by group.
-6. Produce the output for the selected mode.
-7. For Edit and Rewrite, diff the file you wrote against the source. Patched
+6. **Sweep the Surface entries one at a time.** Take the vocabulary, verb and
+   phrase lists in the Surface group and check the draft against each entry,
+   rather than reading once and reporting what stood out. Surface is the only
+   group where a miss is unambiguous: those entries are mechanical, which is
+   why they are fixed without asking, and a survivor is an oversight rather
+   than a decision. Everywhere else, finding nothing can be the right answer.
+7. Produce the output for the selected mode.
+8. For Edit and Rewrite, diff the file you wrote against the source. Patched
    correctly, that diff is your findings list and nothing else. Anything in it
    you cannot name a finding for is drift: put it back. Then re-read the result
-   against the rulings and the voice traits from step 4.
-8. Report Judgment and Substance findings in every mode, including Edit and
-   Rewrite. They go after the draft, under **Judgment: your call** and
-   **Questions only you can answer**. Both carry the quoted text, so the writer
-   can see what fired without opening the file.
+   against the rulings and the voice traits from step 4, and sweep Surface once
+   more against what you actually wrote.
+9. Report Judgment and Substance findings in every mode, including Edit and
+   Rewrite. They go after the draft, under the headings **Judgment: your call**
+   and **Substance: questions only you can answer**, worded exactly that way so
+   both name their group. Both carry the quoted text, so the writer can see what
+   fired without opening the file.
 
 ## Output
 
@@ -207,8 +216,10 @@ text it fired on makes them go hunting; quote enough to be found.
 
 For Edit and Rewrite: the file path written, the **diff between the source and
 what you wrote**, a short **What changed** section, then **Judgment: your call**
-with the quoted passages, then **Questions only you can answer** for the
-Substance findings.
+with the quoted passages, then **Substance: questions only you can answer**.
+
+Every section heading names its group, so a reader scanning the output can tell
+which permission applied without knowing the catalogue.
 
 Show the diff, do not describe it. Every hunk in it should be a finding you can
 name. If one is not, you changed something nobody asked you to change, and it

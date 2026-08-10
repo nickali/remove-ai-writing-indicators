@@ -38,6 +38,33 @@ GROUP_NAMES = ["Surface", "Structure", "Voice", "Judgment", "Substance"]
 
 LIST_ITEM = re.compile(r"^\s*([-*+]|\d+\.)\s", re.M)
 
+SURFACE_PHRASES = REPO_ROOT / "tests" / "surface-phrases.txt"
+
+
+def surface_terms():
+    """The Surface phrases, minus comments and blanks."""
+    return [
+        line.strip()
+        for line in SURFACE_PHRASES.read_text().splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+
+
+def surface_hits(text):
+    """Surface-group phrases still present in text, with a count each.
+
+    Word-bounded on both ends, so "underutilized" is not a hit for "utilize"
+    and "foster" does not fire inside "fostered" — a real miss reads as the
+    bare word. Hyphens are word characters here, hence the explicit class.
+    """
+    hits = {}
+    for term in surface_terms():
+        pattern = r"(?<![\w-])" + re.escape(term) + r"(?![\w-])"
+        found = re.findall(pattern, text, re.I)
+        if found:
+            hits[term] = len(found)
+    return hits
+
 # One agent run can take several minutes on a slow provider.
 AGENT_TIMEOUT = 600
 
@@ -164,6 +191,23 @@ class StructureChecks:
             text = path.read_text().lower()
             self.assertNotIn("no-ai-slop", text, f"{path.name} must not reference other skills")
 
+    def assert_surface_phrases_are_in_the_catalogue(self):
+        """The scanner may only assert what the skill actually promises.
+
+        Every phrase used to measure a miss has to come from the Surface group
+        in indicators.md. Otherwise the suite starts failing runs for words the
+        skill was never told to fix.
+        """
+        # Collapse whitespace first: the catalogue wraps at 79 columns, so
+        # multiword entries like "game changer" straddle a line break.
+        catalogue = " ".join((SKILL_DIR / "indicators.md").read_text().lower().split())
+        surface = catalogue.split("## structure", 1)[0]
+
+        missing = [t for t in surface_terms() if t.lower() not in surface]
+        self.assertEqual(
+            missing, [], f"phrases not in the Surface group of indicators.md: {missing}"
+        )
+
     def assert_fixture_and_answers_are_separate(self):
         """A fixture that ships its own answer key cannot test detection.
 
@@ -271,6 +315,12 @@ class ModeChecks:
         )
         self.assertNotIn("—", text, "em dash survived in a draft under 300 words")
 
+        # Surface is "fix without asking", so anything left is a miss, not a
+        # judgment call. This is the group's recall, measured rather than assumed.
+        self.assertEqual(
+            surface_hits(text), {}, "Surface phrases survived the edit"
+        )
+
     def check_edit_checklist(self):
         """Ruling 5: in an enumeration, no fix may drop a member.
 
@@ -291,9 +341,9 @@ class ModeChecks:
         text = produced.read_text()
 
         # Without this the test passes on a copy that was never edited.
-        lowered = text.lower()
-        for word in ("utilize", "leverage"):
-            self.assertNotIn(word, lowered, f"{word} survived the Surface pass")
+        self.assertEqual(
+            surface_hits(text), {}, "Surface phrases survived the edit"
+        )
 
         for member in (
             "company size", "vertical", "renewal date",

@@ -46,6 +46,9 @@ class TestClaudeCode(unittest.TestCase, StructureChecks, ModeChecks):
     def test_fixture_and_answers_are_separate(self):
         self.assert_fixture_and_answers_are_separate()
 
+    def test_surface_phrases_are_in_the_catalogue(self):
+        self.assert_surface_phrases_are_in_the_catalogue()
+
     # --- install --------------------------------------------------------
 
     @needs_harness("claude")
