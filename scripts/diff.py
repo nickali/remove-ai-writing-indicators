@@ -1,6 +1,10 @@
 """Side-by-side HTML diff of an Edit or Rewrite run. Stdlib only.
 
     python3 scripts/diff.py post.md post_v2.md [out.html]
+    open diff.html          # xdg-open on Linux, start on Windows
+
+Writes ./diff.html unless a third argument says otherwise, and prints the path
+it wrote. Nothing opens it for you.
 
 For most reviewing, `git diff --no-index --word-diff` is better: every change
 lands on one line as [-old-]{+new+} and a hundred of them scan in seconds. This
@@ -116,7 +120,7 @@ def render(src, out, dest):
 
 def main(argv):
     if len(argv) < 3:
-        print(__doc__.strip().splitlines()[2].strip(), file=sys.stderr)
+        print(__doc__.strip(), file=sys.stderr)
         return 2
     src, out = Path(argv[1]), Path(argv[2])
     dest = Path(argv[3]) if len(argv) > 3 else Path("diff.html")

@@ -286,14 +286,19 @@ anywhere: writing a long document out is an act of regeneration, and
 regeneration compresses. On a 500-line reference page, diff the output:
 
 ```bash
-git diff --no-index --word-diff post.mdx post_v2.mdx   # every change on one line
-python3 scripts/diff.py post.mdx post_v2.mdx           # side by side, as a page
+# in the terminal, every change on one line as [-old-]{+new+}
+git diff --no-index --word-diff post.mdx post_v2.mdx
+
+# or side by side in a browser
+python3 scripts/diff.py post.mdx post_v2.mdx    # writes ./diff.html
+open diff.html                                  # xdg-open on Linux, start on Windows
 ```
 
-The word-diff is the one to reach for. It puts each change inline as
-`[-old-]{+new+}`, so a hundred of them scan in seconds and a dropped list member
-is obvious. `scripts/diff.py` is stdlib-only and writes `diff.html` for when you
-want the whole document side by side, or a page to hand to somebody.
+The word-diff is the one to reach for. A hundred changes scan in seconds and a
+dropped list member is obvious. `scripts/diff.py` is stdlib-only, shows the
+whole document rather than just the changed spans, and takes an optional third
+argument for where to write the page. Use it when you want to read at length,
+or to hand someone a link.
 
 ## Fixtures
 
