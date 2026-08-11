@@ -283,7 +283,17 @@ eighteen members and the list count, which `tests/` asserts on every agent run.
 
 That is one fixture passing, not a proof. The underlying pressure has not gone
 anywhere: writing a long document out is an act of regeneration, and
-regeneration compresses. On a 500-line reference page, diff the output.
+regeneration compresses. On a 500-line reference page, diff the output:
+
+```bash
+git diff --no-index --word-diff post.mdx post_v2.mdx   # every change on one line
+python3 scripts/diff.py post.mdx post_v2.mdx           # side by side, as a page
+```
+
+The word-diff is the one to reach for. It puts each change inline as
+`[-old-]{+new+}`, so a hundred of them scan in seconds and a dropped list member
+is obvious. `scripts/diff.py` is stdlib-only and writes `diff.html` for when you
+want the whole document side by side, or a page to hand to somebody.
 
 ## Fixtures
 
